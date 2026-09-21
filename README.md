@@ -1,4 +1,4 @@
-#**AI-assisted pitch screening for an early-stage investor, built with n8n, Google Gemini, Google Sheets, and Gmail.**
+# **AI-assisted pitch screening for an early-stage investor, built with n8n, Google Gemini, Google Sheets, and Gmail.**
 
 Founders submit a pitch through a public form. The system acknowledges them, scores the pitch against the investor's thesis, replies to the founder, alerts the CEO about exceptional pitches, and delivers a ranked morning digest of the best ones.
 
