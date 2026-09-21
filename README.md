@@ -206,7 +206,3 @@ n8n-ai-pitch-screening/
 - No credentials are stored in the exported workflows. Reattach your own after import.
 - The public form collects founder names and emails. Handle them according to your privacy obligations and prune n8n execution data regularly.
 - All sample data and screenshots in this repo are synthetic.
-
-## License
-
-MIT (or your choice of license)
