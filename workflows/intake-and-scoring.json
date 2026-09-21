@@ -1,9 +1,9 @@
 {
-  "name": "PitchGate: Intake & Scoring",
+  "name": "Intake & Scoring",
   "nodes": [
     {
       "parameters": {
-        "formTitle": "PitchGate: Submit your pitch",
+        "formTitle": "Submit your pitch",
         "formDescription": "Tell us about your company. Every submission is reviewed. Please keep answers concise and factual.",
         "formFields": {
           "values": [
@@ -120,7 +120,7 @@
             },
             {
               "fieldLabel": "Location",
-              "placeholder": "City, Country",
+              "placeholder": "Drop it if geography doesn't matter",
               "requiredField": true
             },
             {
@@ -132,34 +132,35 @@
             }
           ]
         },
-        "options": {}
+        "options": {
+          "appendAttribution": false
+        }
       },
       "type": "n8n-nodes-base.formTrigger",
       "typeVersion": 2.6,
       "position": [
-        -432,
-        -96
+        -368,
+        -160
       ],
       "id": "7e9eb677-d216-4df1-8d84-55008a3fddaa",
-      "name": "On form submission",
-      "webhookId": "a94c68df-6316-42b7-94dc-e7e98687beef"
+      "name": "On form submission"
     },
     {
       "parameters": {
         "operation": "append",
         "documentId": {
           "__rl": true,
-          "value": "YOUR_GOOGLE_SHEET_ID",
+          "value": "",
           "mode": "list",
-          "cachedResultName": "PitchGate Submissions",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/YOUR_GOOGLE_SHEET_ID/edit"
+          "cachedResultName": "XYZ Submissions",
+          "cachedResultUrl": ""
         },
         "sheetName": {
           "__rl": true,
           "value": "gid=0",
           "mode": "list",
           "cachedResultName": "Sheet1",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/YOUR_GOOGLE_SHEET_ID/edit#gid=0"
+          "cachedResultUrl": ""
         },
         "columns": {
           "mappingMode": "defineBelow",
@@ -451,17 +452,11 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.7,
       "position": [
-        288,
-        -96
+        208,
+        -160
       ],
       "id": "b46c4757-e1f7-4709-b471-be71058f6c3a",
-      "name": "Append row in sheet",
-      "credentials": {
-        "googleSheetsOAuth2Api": {
-          "id": "YOUR_CREDENTIAL_ID",
-          "name": "Google Sheets account"
-        }
-      }
+      "name": "Append row in sheet"
     },
     {
       "parameters": {
@@ -476,8 +471,8 @@
       "type": "@n8n/n8n-nodes-langchain.agent",
       "typeVersion": 3.1,
       "position": [
-        560,
-        -96
+        416,
+        -160
       ],
       "id": "a0839a4a-dbda-4c60-83e5-9bc0fe33cbb8",
       "name": "AI Agent",
@@ -488,14 +483,14 @@
     {
       "parameters": {
         "mode": "raw",
-        "jsonOutput": "={\n  \"submission_id\": \"{{ $execution.id }}\",\n  \"submitted_at\": \"{{ $now.toISO() }}\",\n  \"company\": \"{{ $json['Company'] }}\",\n  \"website\": \"{{ $json['Website'] }}\",\n  \"founder_name\": \"{{ $json['Founder Name'] }}\",\n  \"founder_email\": \"{{ $json['Founder Email'] }}\",\n  \"one_liner\": \"{{ $json['Oneliner (max 300 characters)'].slice(0, 300) }}\",\n  \"stage\": \"{{ $json['Stage'] }}\",\n  \"sector\": \"{{ $json['Sector'] }}\",\n  \"amount\": \"{{ $json['Amount raising'] }}\",\n  \"traction\": \"{{ $json['Traction (max 1500 characters)'].slice(0, 1500) }}\",\n  \"location\": \"{{ $json['Location'] }}\",\n  \"deck_link\": \"{{ $json['Deck Link'] }}\",\n  \"why_us\": \"{{ $json['Why us?'] }}\",\n  \"thesis\": \"PLACEHOLDER: replace with the investor's stages, sectors, check size, and geography. Keep it on one line.\"\n}",
+        "jsonOutput": "={\n  \"submission_id\": \"{{ $execution.id }}\",\n  \"submitted_at\": \"{{ $now.toISO() }}\",\n  \"company\": \"{{ $json['Company'] }}\",\n  \"website\": \"{{ $json['Website'] }}\",\n  \"founder_name\": \"{{ $json['Founder Name'] }}\",\n  \"founder_email\": \"{{ $json['Founder Email'] }}\",\n  \"one_liner\": \"{{ $json['Oneliner (max 300 characters)'].slice(0, 300) }}\",\n  \"stage\": \"{{ $json['Stage'] }}\",\n  \"sector\": \"{{ $json['Sector'] }}\",\n  \"amount\": \"{{ $json['Amount raising'] }}\",\n  \"traction\": \"{{ $json['Traction (max 1500 characters)'].slice(0, 1500) }}\",\n  \"location\": \"{{ $json['Location'] }}\",\n  \"deck_link\": \"{{ $json['Deck Link'] }}\",\n  \"why_us\": \"{{ $json['Why us?'] }}\",\n  \"thesis\": \"Stages: Pre-seed and Seed only. Check size: $250K to $1M, leading or co-leading. Priority sectors: AI / Machine Learning, Fintech, SaaS / Enterprise Software, Developer Tools / Infrastructure. Geography: Africa and Europe, remote-friendly. Prefer B2B with a clear paying customer. Traction bar: Pre-seed needs a working prototype or pilots; Seed needs first revenue or strong usage growth. Round size should be roughly $500K to $3M. Avoid: consumer social, crypto trading, pre-product ideas with no founder-market fit, and companies raising far more than their traction supports.\"\n}",
         "options": {}
       },
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.5,
       "position": [
         -192,
-        -96
+        -160
       ],
       "id": "00a2f27d-f7f8-4ee9-ace8-d7a70be5a417",
       "name": "Build Payload"
@@ -507,17 +502,11 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
       "typeVersion": 1.1,
       "position": [
-        528,
-        144
+        560,
+        192
       ],
       "id": "c78b07a0-c073-46aa-bc75-44c33f741823",
-      "name": "Google Gemini Chat Model",
-      "credentials": {
-        "googlePalmApi": {
-          "id": "YOUR_CREDENTIAL_ID",
-          "name": "Google Gemini account (primary)"
-        }
-      }
+      "name": "Google Gemini Chat Model"
     },
     {
       "parameters": {
@@ -527,17 +516,11 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
       "typeVersion": 1.1,
       "position": [
-        656,
-        144
+        704,
+        160
       ],
       "id": "bc5e29b2-8368-4f1c-b9ae-12972f7f9f4a",
-      "name": "Google Gemini Chat Model1",
-      "credentials": {
-        "googlePalmApi": {
-          "id": "YOUR_CREDENTIAL_ID",
-          "name": "Google Gemini account (fallback)"
-        }
-      }
+      "name": "Google Gemini Chat Model1"
     },
     {
       "parameters": {
@@ -546,8 +529,8 @@
       "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
       "typeVersion": 1.3,
       "position": [
-        784,
-        144
+        848,
+        240
       ],
       "id": "bcec159c-ce93-43e6-8346-e212c164ad08",
       "name": "Structured Output Parser"
@@ -557,17 +540,17 @@
         "operation": "update",
         "documentId": {
           "__rl": true,
-          "value": "YOUR_GOOGLE_SHEET_ID",
+          "value": "",
           "mode": "list",
-          "cachedResultName": "PitchGate Submissions",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/YOUR_GOOGLE_SHEET_ID/edit"
+          "cachedResultName": "XYZ Submissions",
+          "cachedResultUrl": ""
         },
         "sheetName": {
           "__rl": true,
           "value": "gid=0",
           "mode": "list",
           "cachedResultName": "Sheet1",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/YOUR_GOOGLE_SHEET_ID/edit#gid=0"
+          "cachedResultUrl": ""
         },
         "columns": {
           "mappingMode": "defineBelow",
@@ -691,8 +674,8 @@
               "canBeUsedToMatch": true
             },
             {
-              "id": "location",
-              "displayName": "location",
+              "id": " location",
+              "displayName": " location",
               "required": false,
               "defaultMatch": false,
               "display": true,
@@ -845,34 +828,28 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.7,
       "position": [
-        1200,
-        -192
+        992,
+        -176
       ],
       "id": "3e227b69-f783-4656-9b23-03a7c49b24cb",
-      "name": "Update row in sheet",
-      "credentials": {
-        "googleSheetsOAuth2Api": {
-          "id": "YOUR_CREDENTIAL_ID",
-          "name": "Google Sheets account"
-        }
-      }
+      "name": "Update row in sheet"
     },
     {
       "parameters": {
         "operation": "update",
         "documentId": {
           "__rl": true,
-          "value": "YOUR_GOOGLE_SHEET_ID",
+          "value": "",
           "mode": "list",
-          "cachedResultName": "PitchGate Submissions",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/YOUR_GOOGLE_SHEET_ID/edit"
+          "cachedResultName": "XYZ Submissions",
+          "cachedResultUrl": ""
         },
         "sheetName": {
           "__rl": true,
           "value": "gid=0",
           "mode": "list",
           "cachedResultName": "Sheet1",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/YOUR_GOOGLE_SHEET_ID/edit#gid=0"
+          "cachedResultUrl": ""
         },
         "columns": {
           "mappingMode": "defineBelow",
@@ -987,8 +964,8 @@
               "canBeUsedToMatch": true
             },
             {
-              "id": "location",
-              "displayName": "location",
+              "id": " location",
+              "displayName": " location",
               "required": false,
               "defaultMatch": false,
               "display": true,
@@ -1141,24 +1118,18 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.7,
       "position": [
-        976,
-        0
+        832,
+        -16
       ],
       "id": "9ea602b4-7d6f-46bc-9ce3-f2169b9568e3",
-      "name": "Mark failed",
-      "credentials": {
-        "googleSheetsOAuth2Api": {
-          "id": "YOUR_CREDENTIAL_ID",
-          "name": "Google Sheets account"
-        }
-      }
+      "name": "Mark failed"
     },
     {
       "parameters": {
-        "sendTo": "admin@example.com",
-        "subject": "PitchGate: scoring failed",
+        "sendTo": "example@example.com",
+        "subject": "XYZ: scoring failed",
         "emailType": "text",
-        "message": "=A pitch could not be scored.\n\nCompany: {{ $('Build Payload').item.json.company }}\nFounder: {{ $('Build Payload').item.json.founder_name }} ({{ $('Build Payload').item.json.founder_email }})\nSubmission ID: {{ $('Build Payload').item.json.submission_id }}\n\nThe row in PitchGate Submissions is marked \"failed\". Check the n8n execution log for the error.",
+        "message": "=A pitch could not be scored.\n\nCompany: {{ $('Build Payload').item.json.company }}\nFounder: {{ $('Build Payload').item.json.founder_name }} ({{ $('Build Payload').item.json.founder_email }})\nSubmission ID: {{ $('Build Payload').item.json.submission_id }}\n\nThe row in XYZ Submissions is marked \"failed\". Check the n8n execution log for the error.",
         "options": {
           "appendAttribution": false
         }
@@ -1166,18 +1137,11 @@
       "type": "n8n-nodes-base.gmail",
       "typeVersion": 2.2,
       "position": [
-        1200,
-        0
+        992,
+        -16
       ],
       "id": "06c44397-4901-4ad3-8867-b37e64acf8d4",
-      "name": "Alert Failed",
-      "webhookId": "5ddaa7c3-76af-4587-94c6-c53107b025d9",
-      "credentials": {
-        "gmailOAuth2": {
-          "id": "YOUR_CREDENTIAL_ID",
-          "name": "Gmail account"
-        }
-      }
+      "name": "Alert Failed"
     },
     {
       "parameters": {
@@ -1195,7 +1159,7 @@
               "rightValue": 9,
               "operator": {
                 "type": "number",
-                "operation": "gte"
+                "operation": "gt"
               }
             }
           ],
@@ -1206,8 +1170,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.3,
       "position": [
-        1424,
-        -192
+        1200,
+        -176
       ],
       "id": "40027a19-962b-493c-b39a-f7deb752d055",
       "name": "High Score?"
@@ -1219,16 +1183,16 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        976,
-        -192
+        832,
+        -176
       ],
       "id": "2c7c2271-00a0-4043-adc5-f274fe83be28",
       "name": "Score & Flatten"
     },
     {
       "parameters": {
-        "sendTo": "=ceo@example.com",
-        "subject": "=PitchGate: {{ $('Build Payload').item.json.company }} scored {{ $('Score & Flatten').item.json.fit_score }}/10",
+        "sendTo": "example@example.com",
+        "subject": "=XYZ: {{ $('Build Payload').item.json.company }} scored {{ $('Score & Flatten').item.json.fit_score }}/10",
         "emailType": "text",
         "message": "=A strong pitch just came in.\n\nCompany: {{ $('Build Payload').item.json.company }}\nWebsite: {{ $('Build Payload').item.json.website }}\nOne-liner: {{ $('Build Payload').item.json.one_liner }}\nStage: {{ $('Build Payload').item.json.stage }} | Sector: {{ $('Build Payload').item.json.sector }}\nRaising: {{ $('Build Payload').item.json.amount }}\nDeck: {{ $('Build Payload').item.json.deck_link || 'not provided' }}\n\nScore: {{ $('Score & Flatten').item.json.fit_score }}/10 ({{ $('Score & Flatten').item.json.recommended_action }})\nWhy: {{ $('Score & Flatten').item.json.fit_reason }}\nRed flags: {{ $('Score & Flatten').item.json.red_flags }}\n\nFounder: {{ $('Build Payload').item.json.founder_name }} ({{ $('Build Payload').item.json.founder_email }})\n\nDraft reply (not sent):\n{{ $('Score & Flatten').item.json.draft_reply }}",
         "options": {
@@ -1238,45 +1202,31 @@
       "type": "n8n-nodes-base.gmail",
       "typeVersion": 2.2,
       "position": [
-        1680,
-        -208
+        1424,
+        -256
       ],
       "id": "0310113a-bd56-4b73-b781-e12fd750d6b6",
-      "name": "Alert CEO",
-      "webhookId": "b91781d7-d4e4-4276-bc5f-b782914cbb4e",
-      "credentials": {
-        "gmailOAuth2": {
-          "id": "YOUR_CREDENTIAL_ID",
-          "name": "Gmail account"
-        }
-      }
+      "name": "Alert CEO"
     },
     {
       "parameters": {
         "sendTo": "={{ $('On form submission').item.json['Founder Email'] }}",
         "subject": "=Update on your pitch for {{ $('On form submission').item.json.Company }}",
         "emailType": "text",
-        "message": "=Hi {{ $('Build Payload').item.json.founder_name }},\n\n{{ Number($('Score & Flatten').item.json.fit_score) < 7\n  ? `Thank you for sharing ${$('Build Payload').item.json.company} with us. After reviewing your pitch, we've decided not to move forward at this time. This is not a judgment on your work, only a reflection of how closely it matches our current investment focus. We wish you the best with the raise.`\n  : `Thank you for sharing ${$('Build Payload').item.json.company} with us. We've completed our first review, and your pitch is being looked at more closely by our team. If we'd like to talk, we will reach out to you directly. There is nothing further you need to do.` }}\n\nBest regards,\nPitchGate Investment Team",
+        "message": "=Hi {{ $('Build Payload').item.json.founder_name }},\n\n{{ Number($('Score & Flatten').item.json.fit_score) < 7\n  ? `Thank you for sharing ${$('Build Payload').item.json.company} with us. After reviewing your pitch, we've decided not to move forward at this time. This is not a judgment on your work, only a reflection of how closely it matches our current investment focus. We wish you the best with the raise.`\n  : `Thank you for sharing ${$('Build Payload').item.json.company} with us. We've completed our first review, and your pitch is being looked at more closely by our team. If we'd like to talk, we will reach out to you directly. There is nothing further you need to do.` }}\n\nBest regards,\nXYZ Investment Team",
         "options": {
           "appendAttribution": false,
-          "senderName": "PitchGate Investment Team"
+          "senderName": "XYZ Investment Team"
         }
       },
       "type": "n8n-nodes-base.gmail",
       "typeVersion": 2.2,
       "position": [
-        1456,
-        -432
+        1184,
+        -448
       ],
       "id": "a1a8dbc9-c4dc-40b6-ac20-6e124b20e605",
-      "name": "Send a message1",
-      "webhookId": "9e8cb010-1126-458b-97d5-c8f8b7e50f40",
-      "credentials": {
-        "gmailOAuth2": {
-          "id": "YOUR_CREDENTIAL_ID",
-          "name": "Gmail account"
-        }
-      }
+      "name": "Send a message1"
     },
     {
       "parameters": {
@@ -1287,8 +1237,8 @@
       "type": "n8n-nodes-base.removeDuplicates",
       "typeVersion": 2,
       "position": [
-        64,
-        -96
+        0,
+        -160
       ],
       "id": "dfbf75f0-1b56-48e6-9998-e0f47e590761",
       "name": "Remove Duplicates"
@@ -1296,29 +1246,66 @@
     {
       "parameters": {
         "sendTo": "={{ $('On form submission').item.json['Founder Email'] }}",
-        "subject": "=PitchGate: Application Received for your company: {{ $('On form submission').item.json.Company }}",
+        "subject": "=XYZ: Application Received for your company: {{ $('On form submission').item.json.Company }}",
         "emailType": "text",
-        "message": "=Hello {{ $('On form submission').item.json['Founder Name'] }}.\nWe just received your application for {{ $('On form submission').item.json.Company }} and our team is currently reviewing it.\nWe will revert accordingly.\n\nThank you,\nPitchGate Investment Team",
+        "message": "=Hello {{ $('On form submission').item.json['Founder Name'] }}.\nWe just received your application for {{ $('On form submission').item.json.Company }} and our team is currently reviewing it.\nWe will revert accordingly.\n\nThank you,\nXYZ Investment Team",
         "options": {
           "appendAttribution": false,
-          "senderName": "PitchGate Investment Team"
+          "senderName": "XYZ Investment Team"
         }
       },
       "type": "n8n-nodes-base.gmail",
       "typeVersion": 2.2,
       "position": [
-        304,
-        80
+        160,
+        48
       ],
       "id": "78acb722-52ff-4a11-a972-e3275b1058f6",
-      "name": "Acknowledge Applicant",
-      "webhookId": "ff0472f5-70ff-457b-a4a6-952a98ea7055",
-      "credentials": {
-        "gmailOAuth2": {
-          "id": "YOUR_CREDENTIAL_ID",
-          "name": "Gmail account"
-        }
-      }
+      "name": "Acknowledge Applicant"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        1200,
+        -16
+      ],
+      "id": "c8ed0433-4a76-4378-93d0-285b9495bb33",
+      "name": "End"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        1424,
+        -448
+      ],
+      "id": "8e28d6bf-6176-4f33-a1e7-21c922533016",
+      "name": "End1"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        1584,
+        -256
+      ],
+      "id": "00a982d6-b941-4c96-ad95-7efa96cbdf8e",
+      "name": "End2"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        192,
+        256
+      ],
+      "id": "435e2581-484d-477b-b1dd-be5cd7d76d79",
+      "name": "End3"
     }
   ],
   "pinData": {},
@@ -1471,6 +1458,50 @@
           }
         ]
       ]
+    },
+    "Alert Failed": {
+      "main": [
+        [
+          {
+            "node": "End",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a message1": {
+      "main": [
+        [
+          {
+            "node": "End1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Alert CEO": {
+      "main": [
+        [
+          {
+            "node": "End2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Acknowledge Applicant": {
+      "main": [
+        [
+          {
+            "node": "End3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": false,
@@ -1481,6 +1512,15 @@
     "callerPolicy": "workflowsFromSameOwner",
     "availableInMCP": false
   },
+  "versionId": "3b42eacd-faa3-440e-87e4-7f9e2ec6fc24",
   "nodeGroups": [],
-  "tags": []
+  "id": "aCn8JNjCA6nUO6Ht",
+  "tags": [
+    {
+      "updatedAt": "2026-09-20T23:44:52.961Z",
+      "createdAt": "2026-09-20T23:44:52.961Z",
+      "id": "YldUiT6MVPXn1T3o",
+      "name": "XYZ"
+    }
+  ]
 }

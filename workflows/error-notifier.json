@@ -1,12 +1,12 @@
 {
-  "name": "PitchGate: Error Notifier",
+  "name": "Error Notifier",
   "nodes": [
     {
       "parameters": {},
       "type": "n8n-nodes-base.errorTrigger",
       "typeVersion": 1,
       "position": [
-        -288,
+        -304,
         -48
       ],
       "id": "50be4cc3-c2b0-4858-b2aa-8305709b3015",
@@ -14,10 +14,10 @@
     },
     {
       "parameters": {
-        "sendTo": "admin@example.com",
-        "subject": "=PitchGate workflow error: {{ $json.workflow.name }}",
+        "sendTo": "reviewer@example.com",
+        "subject": "=XYZ workflow error: {{ $json.workflow.name }}",
         "emailType": "text",
-        "message": "=A PitchGate workflow failed.\n\nWorkflow: {{ $json.workflow.name }}\nFailed at node: {{ $json.execution.lastNodeExecuted }}\nError: {{ $json.execution.error.message }}\n\nOpen the execution: {{ $json.execution.url }}",
+        "message": "=An XYZ workflow failed.\n\nWorkflow: {{ $json.workflow.name }}\nFailed at node: {{ $json.execution.lastNodeExecuted }}\nError: {{ $json.execution.error.message }}\n\nOpen the execution: {{ $json.execution.url }}",
         "options": {
           "appendAttribution": false
         }
@@ -25,18 +25,22 @@
       "type": "n8n-nodes-base.gmail",
       "typeVersion": 2.2,
       "position": [
-        -64,
+        -176,
         -48
       ],
       "id": "2e8b3168-2ac4-4dfd-ba58-e8a00d50eb5c",
-      "name": "Alert Error",
-      "webhookId": "5f0c2d1e-7a34-4b8e-9c61-3d2a8e4b7f10",
-      "credentials": {
-        "gmailOAuth2": {
-          "id": "YOUR_CREDENTIAL_ID",
-          "name": "Gmail account"
-        }
-      }
+      "name": "Alert Error"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        -48,
+        -48
+      ],
+      "id": "b939caea-58ef-48aa-aebe-49d758e00dc2",
+      "name": "End"
     }
   ],
   "pinData": {},
@@ -51,9 +55,20 @@
           }
         ]
       ]
+    },
+    "Alert Error": {
+      "main": [
+        [
+          {
+            "node": "End",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
-  "active": false,
+  "active": true,
   "settings": {
     "executionOrder": "v1",
     "binaryMode": "separate"
