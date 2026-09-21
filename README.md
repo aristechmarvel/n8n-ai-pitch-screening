@@ -1,6 +1,6 @@
 # PitchGate
 
-**AI-assisted pitch screening for an early-stage investor, built with n8n, Claude, Google Sheets, and Gmail.**
+**AI-assisted pitch screening for an early-stage investor, built with n8n, Google Gemini, Google Sheets, and Gmail.**
 
 Founders submit a pitch through a public form. PitchGate acknowledges them, scores the pitch against the investor's thesis, replies to the founder, alerts the CEO about exceptional pitches, and delivers a ranked morning digest of the best ones.
 
@@ -23,6 +23,22 @@ PitchGate was built to cut the triage workload without losing a good pitch or le
 5. **Alerts** the CEO immediately for exceptional pitches (9+ out of 10)
 6. **Digests** the day's best pitches (7+) into a ranked email at 7am
 
+## Screenshots
+
+### Founder submission form
+![PitchGate submission form](docs/screenshots/submission-form.png)
+
+### Intake and Scoring workflow (n8n)
+![Intake and Scoring workflow in n8n](docs/screenshots/intake-workflow.png)
+
+### Scored submissions in the Sheet
+![Scored submissions in Google Sheets](docs/screenshots/sheet-scored-rows.png)
+
+*Sample data, hand-entered for illustration. Some columns are hidden for readability.*
+
+### Daily Digest workflow (n8n)
+![Daily Digest workflow in n8n](docs/screenshots/daily-digest-workflow.png)
+
 ## Architecture
 
 ### Workflow 1: Intake and Scoring
@@ -30,7 +46,7 @@ PitchGate was built to cut the triage workload without losing a good pitch or le
 ```mermaid
 flowchart TD
     A[Public n8n form] --> B[Build Payload]
-    B --> C[Block Duplicates]
+    B --> C[Remove Duplicates]
     C --> D[Acknowledge Applicant]
     C --> E[Append Row to Sheet]
     E --> F[AI Agent scores pitch]
@@ -92,12 +108,12 @@ Subscores are logged to the Sheet, so a reviewer can see why a pitch scored what
 - **The AI never writes to founders.** Founders control the text the model reads, so an AI-drafted email could carry an injected instruction out under the firm's name. Founder emails use fixed templates chosen by score.
 - **Layered prompt-injection defense.** The prompt treats submissions as untrusted data, the model flags injection attempts, and code forces the score to 0 when one is flagged.
 - **Rules live in code, not the prompt.** Caps, ranges, and action thresholds don't depend on the model's judgment.
-- **Duplicate protection.** A rolling one-hour check per email address stops repeated submissions from triggering repeated emails or AI cost.
+- **Duplicate protection.** An n8n Remove Duplicates step allows one submission per email address per clock hour, so repeated submissions can't trigger repeated emails or AI cost.
 - **Structured output.** A Structured Output Parser removes fragile JSON handling, and a short code node validates ranges and flattens the result for Sheets.
 
 ## Reliability
 
-- Primary and fallback models (`claude-sonnet-5` with `claude-haiku-4-5` as fallback) plus retries
+- Primary and fallback Google Gemini models, plus retries
 - Failed scoring is marked `failed` in the Sheet and triggers an admin alert
 - A separate error workflow catches anything unexpected
 - The digest sends a "quiet day" note when nothing qualifies, so silence never means "broken"
@@ -110,7 +126,7 @@ Subscores are logged to the Sheet, so a reviewer can see why a pitch scored what
 |---|---|---|
 | Acknowledgment to founder | Within about 5 seconds | |
 | Submission to scored row | 15 to 40 seconds (about 1 minute if fallback is used) | |
-| AI cost per pitch | About one cent or less | |
+| AI cost per pitch | About one cent or less (check current Gemini pricing) | |
 | Scoring completed without manual intervention | 97 to 99% | |
 | Agreement with CEO on advance vs. pass | 7 to 9 of 10 pitches | |
 | Exact score within ±1 point | About 6 to 7 of 10 pitches | |
@@ -149,7 +165,7 @@ With a small pilot, report counts ("8 of 10"), not accuracy percentages.
 |---|---|
 | Orchestration | n8n (self-hosted, Node.js) |
 | Intake | n8n Form Trigger |
-| AI | Claude via the n8n AI Agent node, with Structured Output Parser |
+| AI | Google Gemini via the n8n AI Agent node (primary and fallback models), with Structured Output Parser |
 | Storage | Google Sheets |
 | Email | Gmail |
 
@@ -161,10 +177,10 @@ With a small pilot, report counts ("8 of 10"), not accuracy percentages.
    submission_id, submitted_at, company, website, founder_name, founder_email, one_liner, stage, sector, amount, traction, location, deck_link, why_us, thesis_fit, traction_score, clarity, ask_realism, investor_fit, fit_score, fit_reason, red_flags, recommended_action, draft_reply, status, processed_at
    ```
 
-2. In n8n, add credentials for Google Sheets, Gmail, and Anthropic.
+2. In n8n, add credentials for Google Sheets, Gmail, and Google Gemini (PaLM) API.
 3. Import the workflows from `/workflows` and reattach credentials to each node.
 4. In `Build Payload`, replace the placeholder `thesis` with your investor's criteria.
-5. Set `[Firm Name]` in the three founder-facing emails and update the recipient on the CEO nodes.
+5. Change the sender name and sign-off (`PitchGate Investment Team`) in the two founder-facing emails if you want your own name, and set the recipient on the CEO nodes (`Alert CEO`, `Send Digest`, `Send Quiet Day`).
 6. Set the Error Workflow on the intake and digest workflows to `PitchGate: Error Notifier`.
 7. Publish all three workflows and share the **production** form URL.
 
@@ -173,19 +189,18 @@ Self-hosting notes: set `WEBHOOK_URL` to your public HTTPS address, run n8n unde
 ## Repository structure
 
 ```
-pitchgate/
+n8n-ai-pitch-screening/
 ├── README.md
 ├── workflows/
 │   ├── intake-and-scoring.json
 │   ├── daily-digest.json
 │   └── error-notifier.json
-├── prompts/
-│   ├── scoring-system-message.txt
-│   └── digest-system-message.txt
-├── docs/
-│   └── screenshots/
-└── sample-data/
-    └── example-pitches.csv
+└── docs/
+    └── screenshots/
+        ├── submission-form.png
+        ├── intake-workflow.png
+        ├── sheet-scored-rows.png
+        └── daily-digest-workflow.png
 ```
 
 ## Security and privacy
