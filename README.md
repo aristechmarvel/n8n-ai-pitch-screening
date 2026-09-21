@@ -1,6 +1,4 @@
-# PitchGate
-
-**AI-assisted pitch screening for an early-stage investor, built with n8n, Google Gemini, Google Sheets, and Gmail.**
+*AI-assisted pitch screening for an early-stage investor, built with n8n, Google Gemini, Google Sheets, and Gmail.*
 
 Founders submit a pitch through a public form. PitchGate acknowledges them, scores the pitch against the investor's thesis, replies to the founder, alerts the CEO about exceptional pitches, and delivers a ranked morning digest of the best ones.
 
@@ -12,7 +10,7 @@ Founders submit a pitch through a public form. PitchGate acknowledges them, scor
 
 Investors receive far more pitches than they can read. Reading each one is slow, and replying to each one is slower. Founders, meanwhile, expect at least an acknowledgment, and most never get one.
 
-PitchGate was built to cut the triage workload without losing a good pitch or leaving founders in silence.
+This architecture was built to cut the triage workload without losing a good pitch or leaving founders in silence.
 
 ## What it does
 
@@ -26,7 +24,7 @@ PitchGate was built to cut the triage workload without losing a good pitch or le
 ## Screenshots
 
 ### Founder submission form
-![PitchGate submission form](docs/screenshots/submission-form.png)
+![Submission form](docs/screenshots/submission-form.png)
 
 ### Intake and Scoring workflow (n8n)
 ![Intake and Scoring workflow in n8n](docs/screenshots/intake-workflow.png)
@@ -180,8 +178,8 @@ With a small pilot, report counts ("8 of 10"), not accuracy percentages.
 2. In n8n, add credentials for Google Sheets, Gmail, and Google Gemini (PaLM) API.
 3. Import the workflows from `/workflows` and reattach credentials to each node.
 4. In `Build Payload`, replace the placeholder `thesis` with your investor's criteria.
-5. Change the sender name and sign-off (`PitchGate Investment Team`) in the two founder-facing emails if you want your own name, and set the recipient on the CEO nodes (`Alert CEO`, `Send Digest`, `Send Quiet Day`).
-6. Set the Error Workflow on the intake and digest workflows to `PitchGate: Error Notifier`.
+5. Change the sender name and sign-off (`Investment Team`) in the two founder-facing emails if you want your own name, and set the recipient on the CEO nodes (`Alert CEO`, `Send Digest`, `Send Quiet Day`).
+6. Set the Error Workflow on the intake and digest workflows to `Error Notifier`.
 7. Publish all three workflows and share the **production** form URL.
 
 Self-hosting notes: set `WEBHOOK_URL` to your public HTTPS address, run n8n under a process manager such as pm2 or systemd, and back up your workflows and `~/.n8n` folder.
