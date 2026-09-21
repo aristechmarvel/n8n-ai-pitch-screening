@@ -1,8 +1,6 @@
-# PitchGate
+#**AI-assisted pitch screening for an early-stage investor, built with n8n, Google Gemini, Google Sheets, and Gmail.**
 
-**AI-assisted pitch screening for an early-stage investor, built with n8n, Google Gemini, Google Sheets, and Gmail.**
-
-Founders submit a pitch through a public form. PitchGate acknowledges them, scores the pitch against the investor's thesis, replies to the founder, alerts the CEO about exceptional pitches, and delivers a ranked morning digest of the best ones.
+Founders submit a pitch through a public form. The system acknowledges them, scores the pitch against the investor's thesis, replies to the founder, alerts the CEO about exceptional pitches, and delivers a ranked morning digest of the best ones.
 
 > **Status:** v1, single investor, tested on a small pilot. See [Results](#results) and [Limitations](#limitations).
 
@@ -12,7 +10,7 @@ Founders submit a pitch through a public form. PitchGate acknowledges them, scor
 
 Investors receive far more pitches than they can read. Reading each one is slow, and replying to each one is slower. Founders, meanwhile, expect at least an acknowledgment, and most never get one.
 
-PitchGate was built to cut the triage workload without losing a good pitch or leaving founders in silence.
+This workflow was built to cut the triage workload without losing a good pitch or leaving founders in silence.
 
 ## What it does
 
@@ -26,7 +24,7 @@ PitchGate was built to cut the triage workload without losing a good pitch or le
 ## Screenshots
 
 ### Founder submission form
-![PitchGate submission form](docs/screenshots/submission-form.png)
+![Submission form](docs/screenshots/submission-form.png)
 
 ### Intake and Scoring workflow (n8n)
 ![Intake and Scoring workflow in n8n](docs/screenshots/intake-workflow.png)
@@ -133,7 +131,7 @@ Subscores are logged to the Sheet, so a reviewer can see why a pitch scored what
 | Good pitches scored below 5 (false negatives) | 0 | |
 | CEO screening time at about 50 pitches per week | About 5 hours down to under 1 hour | |
 
-**Time-saving assumption:** manual triage at roughly 6 minutes per pitch (4 to screen, 2 to reply) is about 5 hours for 50 pitches. With PitchGate, the CEO reads a 5-minute daily digest and spends about 5 minutes on each of the top 5 picks, roughly 50 minutes a week.
+**Time-saving assumption:** manual triage at roughly 6 minutes per pitch (4 to screen, 2 to reply) is about 5 hours for 50 pitches. With this system, the CEO reads a 5-minute daily digest and spends about 5 minutes on each of the top 5 picks, roughly 50 minutes a week.
 
 ### How to measure
 
@@ -171,7 +169,7 @@ With a small pilot, report counts ("8 of 10"), not accuracy percentages.
 
 ## Setup
 
-1. Create a Google Sheet named `PitchGate Submissions` with these headers in row 1:
+1. Create a Google Sheet named `Founder Submissions` with these headers in row 1:
 
    ```
    submission_id, submitted_at, company, website, founder_name, founder_email, one_liner, stage, sector, amount, traction, location, deck_link, why_us, thesis_fit, traction_score, clarity, ask_realism, investor_fit, fit_score, fit_reason, red_flags, recommended_action, draft_reply, status, processed_at
@@ -180,8 +178,8 @@ With a small pilot, report counts ("8 of 10"), not accuracy percentages.
 2. In n8n, add credentials for Google Sheets, Gmail, and Google Gemini (PaLM) API.
 3. Import the workflows from `/workflows` and reattach credentials to each node.
 4. In `Build Payload`, replace the placeholder `thesis` with your investor's criteria.
-5. Change the sender name and sign-off (`PitchGate Investment Team`) in the two founder-facing emails if you want your own name, and set the recipient on the CEO nodes (`Alert CEO`, `Send Digest`, `Send Quiet Day`).
-6. Set the Error Workflow on the intake and digest workflows to `PitchGate: Error Notifier`.
+5. Change the sender name and sign-off (`Investment Team`) in the two founder-facing emails if you want your own name, and set the recipient on the CEO nodes (`Alert CEO`, `Send Digest`, `Send Quiet Day`).
+6. Set the Error Workflow on the intake and digest workflows to `Error Notifier`.
 7. Publish all three workflows and share the **production** form URL.
 
 Self-hosting notes: set `WEBHOOK_URL` to your public HTTPS address, run n8n under a process manager such as pm2 or systemd, and back up your workflows and `~/.n8n` folder.
